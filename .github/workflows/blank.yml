@@ -1,0 +1,45 @@
+name: Example Workflow with Choices
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select the environment'
+        required: true
+        default: 'development'
+        options:
+          - development
+          - staging
+          - production
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Deploy to Environment
+        run: |
+          if [[ "${{ github.event.inputs.environment }}" == "development" ]]; then
+            echo "Deploying to Development Environment"
+            # Add your deployment commands here
+          elif [[ "${{ github.event.inputs.environment }}" == "staging" ]]; then
+            echo "Deploying to Staging Environment"
+            # Add your deployment commands here
+          elif [[ "${{ github.event.inputs.environment }}" == "production" ]]; then
+            echo "Deploying to Production Environment"
+            # Add your deployment commands here
+          fi
